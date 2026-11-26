@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[AI Eng #01] AI가 뽑아준 장문의 답, 왜 읽다 지칠까? — 이해 프로세스 4단계 전환</title>
+
+  <!-- 카카오톡 링크 공유 미리보기(Open Graph) 메타태그 -->
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://kilsup.github.io/ai_newsletter/issues/2026-11-26-issue-01-comprehension-bottleneck.html" />
+  <meta property="og:title" content="[AI Eng #01] AI가 뽑아준 장문의 답, 왜 읽다 지칠까?" />
+  <meta property="og:description" content="읽기 병목을 끝내는 4단계 전환: ASD-STE100 압축, 인터랙티브 HTML 시각화, 퀴즈 검증, 포맷 스킬 고정." />
+
+  <!-- 아카이브 자동 색인용 메타태그 (update_index.py가 파싱함) -->
+  <meta name="newsletter-issue" content="01" />
+  <meta name="newsletter-date" content="2026-11-26" />
+  <meta name="newsletter-title" content="AI가 뽑아준 장문의 답, 왜 읽다 지칠까? — 연구원의 '이해 프로세스' 4단계 전환" />
+  <meta name="newsletter-summary" content="읽기 병목을 끝내는 4단계 전환: ASD-STE100 압축, 인터랙티브 HTML 시각화, 퀴즈 검증, 포맷 스킬 고정." />
+  <meta name="newsletter-tags" content="Workflow,ASD-STE100,Visualization,Skill,Process Upgrade" />
+  <meta name="newsletter-sources" content="1" />
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-soft: #eff6ff;
+      --accent-border: #bfdbfe;
+      --ok: #059669;
+      --ok-soft: #ecfdf5;
+      --ok-border: #a7f3d0;
+      --warn: #d97706;
+      --warn-soft: #fffbeb;
+      --warn-border: #fde68a;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --danger-border: #fecaca;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+      --svg-bg: #f8fafc;
+      --svg-box: #ffffff;
+      --svg-border: #cbd5e1;
+      --svg-text: #0f172a;
+      --svg-muted: #64748b;
+      --shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+      --font-scale: 1;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --border: #263244;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.14);
+      --accent-border: rgba(96, 165, 250, 0.35);
+      --ok: #34d399;
+      --ok-soft: rgba(52, 211, 153, 0.14);
+      --ok-border: rgba(52, 211, 153, 0.35);
+      --warn: #fbbf24;
+      --warn-soft: rgba(251, 191, 36, 0.14);
+      --warn-border: rgba(251, 191, 36, 0.35);
+      --danger: #f87171;
+      --danger-soft: rgba(248, 113, 113, 0.14);
+      --danger-border: rgba(248, 113, 113, 0.35);
+      --code-bg: #020617;
+      --code-text: #e2e8f0;
+      --svg-bg: #0f172a;
+      --svg-box: #1e293b;
+      --svg-border: #334155;
+      --svg-text: #f8fafc;
+      --svg-muted: #94a3b8;
+      --shadow: 0 4px 22px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: calc(15.5px * var(--font-scale));
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .progress-track { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 100; }
+    .progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.08s linear; }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-back {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+    }
+    .nav-back:hover { color: var(--accent); }
+    .tool-group { display: flex; align-items: center; gap: 6px; }
+    .tool-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .tool-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 28px 16px 88px; }
+
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 26px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .pill-accent { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-border); }
+    .pill-ste { background: var(--ok-soft); color: var(--ok); }
+    .hero h1 { margin: 0 0 12px; font-size: clamp(22px, 5vw, 30px); line-height: 1.3; letter-spacing: -0.02em; }
+    .hero-lead { margin: 0 0 18px; color: var(--muted); font-size: calc(15.5px * var(--font-scale)); }
+    .shift-banner { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+    .shift-box { border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+    .shift-before { background: var(--danger-soft); border: 1px solid var(--danger-border); }
+    .shift-after { background: var(--ok-soft); border: 1px solid var(--ok-border); }
+    .shift-tag { display: block; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; letter-spacing: 0.03em; }
+    .shift-before .shift-tag { color: var(--danger); }
+    .shift-after .shift-tag { color: var(--ok); }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .sec-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; }
+    .sec-num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .sec-title { margin: 0; font-size: 19px; line-height: 1.35; letter-spacing: -0.01em; }
+    .sec-intro { margin: 0 0 14px; color: var(--muted); font-size: 14.5px; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .pain-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--danger);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .idea-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--ok);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .card-kicker { font-size: 11.5px; font-weight: 800; letter-spacing: 0.03em; margin-bottom: 6px; }
+    .pain-card .card-kicker { color: var(--danger); }
+    .idea-card .card-kicker { color: var(--ok); }
+    .pain-card h3, .idea-card h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.4; }
+    .pain-card p, .idea-card p { margin: 0; font-size: 14px; color: var(--muted); }
+    .idea-list { display: grid; gap: 12px; margin-bottom: 14px; }
+    .idea-card-wide {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--ok);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .idea-card-wide .card-kicker { color: var(--ok); font-size: 11.5px; font-weight: 800; letter-spacing: 0.03em; margin-bottom: 6px; }
+    .idea-card-wide h3 { margin: 0 0 8px; font-size: 15.5px; line-height: 1.4; }
+    .idea-card-wide p { margin: 0 0 10px; font-size: 14px; color: var(--text); }
+    .idea-example {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .idea-example strong { display: block; color: var(--accent); font-size: 12px; margin-bottom: 4px; }
+    .idea-example ul { margin: 0; padding-left: 18px; }
+    .idea-example li { margin-bottom: 3px; }
+    .idea-example li:last-child { margin-bottom: 0; }
+
+    .diagram-box {
+      background: var(--svg-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .diagram-box svg { display: block; width: 100%; height: auto; min-width: 580px; }
+    .diagram-caption { margin-top: 8px; font-size: 12.5px; color: var(--muted); text-align: center; }
+
+    .svg-node { cursor: pointer; transition: opacity 0.2s ease; }
+    .svg-node rect { transition: stroke 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease; }
+    .svg-node.is-dimmed { opacity: 0.42; }
+    .svg-node.is-active rect {
+      stroke: var(--accent) !important;
+      stroke-width: 3 !important;
+      fill: var(--accent-soft) !important;
+    }
+
+    .stepper { margin-top: 16px; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .stepper-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 12px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .step-tab {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 38px;
+    }
+    .step-tab.active { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+    .step-body { padding: 16px; }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .step-panel h3 { margin: 0 0 8px; font-size: 16px; }
+    .step-panel p { margin: 0 0 10px; }
+    .ba-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 10px 0 12px; }
+    .ba-pill { padding: 10px 12px; border-radius: 10px; font-size: 13.5px; }
+    .ba-pill.before { background: var(--danger-soft); border: 1px solid var(--danger-border); }
+    .ba-pill.after { background: var(--ok-soft); border: 1px solid var(--ok-border); }
+    .ba-pill strong { display: block; font-size: 11.5px; margin-bottom: 3px; }
+    .ba-pill.before strong { color: var(--danger); }
+    .ba-pill.after strong { color: var(--ok); }
+    .stepper-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .step-ctrl {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 38px;
+    }
+    .step-ctrl:disabled { opacity: 0.4; cursor: not-allowed; }
+    .step-counter { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 540px; }
+    th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-2); font-weight: 700; white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    .badge-good, .badge-warn, .badge-neutral { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .badge-good { background: var(--ok-soft); color: var(--ok); }
+    .badge-warn { background: var(--warn-soft); color: var(--warn); }
+    .badge-neutral { background: var(--surface-2); color: var(--muted); }
+
+    .accordion { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .accordion:last-child { margin-bottom: 0; }
+    .accordion summary {
+      padding: 14px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface-2);
+      min-height: 48px;
+    }
+    .accordion summary::-webkit-details-marker { display: none; }
+    .accordion summary::after { content: "+"; font-size: 18px; color: var(--accent); font-weight: 800; }
+    .accordion[open] summary::after { content: "−"; }
+    .accordion-body { padding: 14px 16px; border-top: 1px solid var(--border); }
+    .accordion-body ul { margin: 0; padding-left: 18px; }
+    .accordion-body li { margin-bottom: 6px; }
+    .code-block { position: relative; margin-top: 10px; }
+    .code-block pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 14px 72px 14px 14px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.58;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .copy-code-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .copy-code-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+    .term-btn {
+      appearance: none;
+      border: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font: inherit;
+      font-weight: 700;
+      padding: 0 5px;
+      border-radius: 5px;
+      border-bottom: 1.5px dashed var(--accent);
+      cursor: pointer;
+    }
+    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .glossary-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+    .glossary-item dt { font-weight: 800; color: var(--accent); font-size: 14px; margin-bottom: 4px; }
+    .glossary-item dd { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+    .ref-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13.5px;
+    }
+    .ref-box strong { display: block; margin-bottom: 4px; color: var(--text); }
+    .ref-box p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+    .ref-box a.inline-link { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .ref-box a.inline-link:hover { text-decoration: underline; }
+    .ts-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .ts-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-border);
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 700;
+      min-height: 36px;
+    }
+
+    .checklist { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 10px; }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      cursor: pointer;
+    }
+    .check-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+    .check-item.done span { text-decoration: line-through; color: var(--muted); }
+    .check-status { margin-bottom: 18px; font-size: 13px; color: var(--muted); font-weight: 600; }
+
+    .term-sheet {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translate(-50%, 140%);
+      width: min(92vw, 560px);
+      background: var(--surface);
+      border: 1.5px solid var(--accent);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+      z-index: 200;
+      transition: transform 0.2s ease;
+    }
+    .term-sheet.open { transform: translate(-50%, 0); }
+    .term-sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .term-sheet-head strong { color: var(--accent); font-size: 15px; }
+    .term-sheet-close { border: none; background: var(--surface-2); color: var(--text); border-radius: 8px; padding: 4px 10px; font-weight: 700; cursor: pointer; }
+    .term-sheet p { margin: 0; font-size: 14px; }
+
+    .toast {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translate(-50%, -16px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--text);
+      color: var(--bg);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 250;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      .hero, .section { padding: 18px 15px; }
+      .sec-title { font-size: 17px; }
+    }
+  </style>
+</head>
+<body data-issue-id="issue-01-comprehension-bottleneck">
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+  <nav class="toolbar" aria-label="뉴스레터 도구 모음">
+    <div class="toolbar-inner">
+      <a class="nav-back" href="../index.html">← 아카이브</a>
+      <div class="tool-group">
+        <button type="button" class="tool-btn" id="fontDec" aria-label="글자 작게">A-</button>
+        <button type="button" class="tool-btn" id="fontInc" aria-label="글자 크게">A+</button>
+        <button type="button" class="tool-btn" id="themeToggle">다크</button>
+        <button type="button" class="tool-btn" id="copyLinkBtn">링크 복사</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- HEADER: 현업 문제 공감 + Before/After 전환 선언 -->
+    <header class="hero">
+      <div class="meta-row">
+        <span class="pill pill-accent">AI Eng #01</span>
+        <span class="pill pill-ste">ASD-STE100 • Process Upgrade</span>
+        <time datetime="2026-11-26">2026-11-26</time>
+      </div>
+      <h1>AI가 뽑아준 장문의 답, 왜 읽다 지칠까? — 연구원의 '이해 프로세스' 4단계 전환</h1>
+      <p class="hero-lead">생각과 초안 작성은 에이전트에게 맡길 수 있다. 하지만 이해는 외주를 맡길 수 없다. 코드와 논문 생성이 빨라진 지금, 진짜 병목은 '읽고 내 것으로 만드는 속도'다.</p>
+
+      <div class="shift-banner">
+        <div class="shift-box shift-before">
+          <span class="shift-tag">BEFORE (지금 겪는 병목)</span>
+          "설명해 줘"라고 묻고 3페이지 장문을 읽는다. 매번 목차가 달라지고, 쉽게 줄이면 실무 디테일이 빠진다.
+        </div>
+        <div class="shift-box shift-after">
+          <span class="shift-tag">AFTER (바뀐 프로세스)</span>
+          <button type="button" class="term-btn" data-term="ASD-STE100" data-def="항공 정비 매뉴얼의 간소화 기술 언어 규격. 1문장 1개념, 능동태, 모호한 수식어 제거로 기술 밀도와 가독성을 동시에 확보한다.">ASD-STE100</button>으로 압축하고, 클릭형 HTML로 구조를 보며, 고정 포맷 스킬로 모든 문서를 같은 틀로 읽는다.
+        </div>
+      </div>
+    </header>
+
+    <!-- 01. 일하다 보면 겪는 문제 -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">일하다 보면 이런 문제가 생긴다</h2>
+      </div>
+      <div class="card-grid">
+        <article class="pain-card">
+          <div class="card-kicker">PAIN 01 • 장황함 vs 누락</div>
+          <h3>길면 안 읽히고, 줄이면 알맹이가 빠진다</h3>
+          <p>새 코드나 논문을 그냥 설명해 달라고 하면 3페이지 장문이 나온다. 반대로 쉽게 요약하라고 하면 실험 조건과 핵심 로직이 증발한다.</p>
+        </article>
+        <article class="pain-card">
+          <div class="card-kicker">PAIN 02 • 줄글의 구조 한계</div>
+          <h3>글만 읽어서는 흐름과 연결이 안 잡힌다</h3>
+          <p>복잡한 저장소의 호출 순서나 멀티 모듈 구조는 줄글로 읽어도 머릿속에 그려지지 않는다. 결국 코드를 처음부터 다시 열어 본다.</p>
+        </article>
+        <article class="pain-card">
+          <div class="card-kicker">PAIN 03 • 매번 바뀌는 형식</div>
+          <h3>설계 문서 5개를 물으면 5개 다 목차가 다르다</h3>
+          <p>에이전트는 비결정적(Non-deterministic)으로 답한다. 문서마다 출력 구조가 달라지면 독자는 매번 새 형식에 적응하느라 에너지를 낭비한다.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 02. 프로세스 전환: Before → After -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">이렇게 바꾸면 이해 속도가 달라진다</h2>
+      </div>
+      <p class="sec-intro">기존의 수동 정독 흐름(상단)을 4단계 능동 프로세스(하단)로 전환한다. 하단 박스를 클릭해 단계별 전환 방법을 확인한다.</p>
+
+      <div class="diagram-box">
+        <svg viewBox="0 0 780 285" width="100%" role="img" aria-label="기존 수동 정독 방식과 개선된 4단계 이해 프로세스 비교 다이어그램" data-stepper-svg="main">
+          <defs>
+            <marker id="arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--danger)" />
+            </marker>
+            <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent)" />
+            </marker>
+          </defs>
+
+          <!-- BEFORE 행 -->
+          <rect x="14" y="14" width="752" height="92" rx="12" fill="var(--danger-soft)" stroke="var(--danger-border)" stroke-width="1" />
+          <text x="30" y="36" fill="var(--danger)" font-size="11.5" font-weight="800">BEFORE • 기존 프로세스 (이해 병목 발생 구간)</text>
+
+          <rect x="30" y="48" width="190" height="44" rx="8" fill="var(--svg-box)" stroke="var(--danger-border)" stroke-width="1.2" />
+          <text x="125" y="74" text-anchor="middle" fill="var(--svg-text)" font-size="12.5" font-weight="700">"이거 설명해 줘"</text>
+          <line x1="220" y1="70" x2="275" y2="70" stroke="var(--danger)" stroke-width="1.8" marker-end="url(#arr-red)" />
+
+          <rect x="280" y="48" width="215" height="44" rx="8" fill="var(--svg-box)" stroke="var(--danger)" stroke-width="1.8" stroke-dasharray="4,3" />
+          <text x="387" y="74" text-anchor="middle" fill="var(--danger)" font-size="12.5" font-weight="700">장문 줄글 + 매번 다른 목차</text>
+          <line x1="495" y1="70" x2="550" y2="70" stroke="var(--danger)" stroke-width="1.8" marker-end="url(#arr-red)" />
+
+          <rect x="555" y="48" width="195" height="44" rx="8" fill="var(--svg-box)" stroke="var(--danger-border)" stroke-width="1.2" />
+          <text x="652" y="74" text-anchor="middle" fill="var(--svg-muted)" font-size="12.5" font-weight="700">읽다 지침 · 이해 착각</text>
+
+          <!-- 전환 화살표 -->
+          <text x="390" y="128" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="800">▼ 4단계 프로세스 전환 (클릭해 상세 확인) ▼</text>
+
+          <!-- AFTER 행 -->
+          <rect x="14" y="140" width="752" height="132" rx="12" fill="var(--svg-box)" stroke="var(--accent-border)" stroke-width="1.5" />
+          <text x="30" y="162" fill="var(--ok)" font-size="11.5" font-weight="800">AFTER • 개선된 이해 프로세스 (고정 스캐폴딩 + 능동 탐색)</text>
+
+          <g class="svg-node" data-step="1">
+            <rect x="28" y="176" width="162" height="82" rx="10" fill="var(--svg-box)" stroke="var(--svg-border)" stroke-width="1.5" />
+            <text x="109" y="202" text-anchor="middle" fill="var(--svg-text)" font-size="13" font-weight="700">1. 언어 압축</text>
+            <text x="109" y="223" text-anchor="middle" fill="var(--accent)" font-size="11.5" font-weight="700">ELI5 → ASD-STE100</text>
+            <text x="109" y="242" text-anchor="middle" fill="var(--svg-muted)" font-size="11">디테일 유지·길이 축소</text>
+          </g>
+          <line x1="190" y1="217" x2="212" y2="217" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+          <g class="svg-node" data-step="2">
+            <rect x="216" y="176" width="164" height="82" rx="10" fill="var(--svg-box)" stroke="var(--svg-border)" stroke-width="1.5" />
+            <text x="298" y="202" text-anchor="middle" fill="var(--svg-text)" font-size="13" font-weight="700">2. 클릭형 시각화</text>
+            <text x="298" y="223" text-anchor="middle" fill="var(--accent)" font-size="11.5" font-weight="700">Interactive HTML</text>
+            <text x="298" y="242" text-anchor="middle" fill="var(--svg-muted)" font-size="11">흐름도·출처·시나리오</text>
+          </g>
+          <line x1="380" y1="217" x2="402" y2="217" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+          <g class="svg-node" data-step="3">
+            <rect x="406" y="176" width="160" height="82" rx="10" fill="var(--svg-box)" stroke="var(--svg-border)" stroke-width="1.5" />
+            <text x="486" y="202" text-anchor="middle" fill="var(--svg-text)" font-size="13" font-weight="700">3. 이해 자가 검증</text>
+            <text x="486" y="223" text-anchor="middle" fill="var(--ok)" font-size="11.5" font-weight="700">Quiz &amp; Shorts</text>
+            <text x="486" y="242" text-anchor="middle" fill="var(--svg-muted)" font-size="11">착각 제거·핵심 각인</text>
+          </g>
+          <line x1="566" y1="217" x2="588" y2="217" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-blue)" />
+
+          <g class="svg-node" data-step="4">
+            <rect x="592" y="176" width="160" height="82" rx="10" fill="var(--svg-box)" stroke="var(--svg-border)" stroke-width="1.5" />
+            <text x="672" y="202" text-anchor="middle" fill="var(--svg-text)" font-size="13" font-weight="700">4. 포맷 스킬 고정</text>
+            <text x="672" y="223" text-anchor="middle" fill="var(--warn)" font-size="11.5" font-weight="700">12종 × 3단 (into)</text>
+            <text x="672" y="242" text-anchor="middle" fill="var(--svg-muted)" font-size="11">인지 스캐폴딩 통일</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">그림 1. 수동 장문 정독(Before)에서 능동·고정 포맷 이해(After)로의 워크플로우 전환</div>
+      </div>
+
+      <div class="stepper" data-stepper="main">
+        <div class="stepper-nav">
+          <button type="button" class="step-tab active" data-step="1">1. 언어 압축</button>
+          <button type="button" class="step-tab" data-step="2">2. 클릭형 시각화</button>
+          <button type="button" class="step-tab" data-step="3">3. 자가 검증</button>
+          <button type="button" class="step-tab" data-step="4">4. 포맷 고정</button>
+        </div>
+        <div class="step-body">
+          <div class="step-panel active" data-step="1">
+            <h3>전환 1: 자유 서술을 버리고 '언어 규격'을 지정한다</h3>
+            <div class="ba-inline">
+              <div class="ba-pill before"><strong>기존 방식</strong>"설명해 줘"로 장문을 받거나, "쉽게 써줘"로 핵심 스펙을 잃는다.</div>
+              <div class="ba-pill after"><strong>바뀐 방식</strong>낯선 개념은 <button type="button" class="term-btn" data-term="ELI5 (Explain Like I'm Five)" data-def="전문 용어를 제거하고 일상 비유로 초기 개념 장벽을 낮추는 설명 방식.">ELI5</button>로 진입하고, 실무 분석은 ASD-STE100으로 압축한다.</div>
+            </div>
+            <p>항공 정비 규격인 ASD-STE100을 지시하면 에이전트는 불필요한 미사여구를 버린다. 문장은 짧아지고 구조·절차·원인 같은 기술 밀도는 유지된다.</p>
+          </div>
+
+          <div class="step-panel" data-step="2">
+            <h3>전환 2: 줄글을 읽지 않고 '조작하는 HTML 1장'으로 바꾼다</h3>
+            <div class="ba-inline">
+              <div class="ba-pill before"><strong>기존 방식</strong>마크다운 텍스트를 스크롤하며 모듈 간 연결 관계를 머릿속으로 조합한다.</div>
+              <div class="ba-pill after"><strong>바뀐 방식</strong>다이어그램·표가 담긴 <button type="button" class="term-btn" data-term="인터랙티브 HTML (Interactive HTML)" data-def="다이어그램 클릭, 시나리오 재생, 검색, 출처 라인 확인 기능을 단일 HTML 페이지로 묶은 탐색형 산출물.">인터랙티브 HTML</button>을 생성해 직접 클릭하며 탐색한다.</div>
+            </div>
+            <p>복잡한 저장소도 노드를 누르면 역할과 원문 파일 라인 번호가 즉시 뜬다. 버그 수정이나 요청 처리 시나리오를 버튼으로 재생하면 동작 흐름이 1분 안에 잡힌다.</p>
+          </div>
+
+          <div class="step-panel" data-step="3">
+            <h3>전환 3: 읽고 끝내지 않고 '퀴즈·쇼츠'로 이해를 확정한다</h3>
+            <div class="ba-inline">
+              <div class="ba-pill before"><strong>기존 방식</strong>요약을 다 읽고 이해했다고 착각한 뒤, 다음 날 구현할 때 다시 헤맨다.</div>
+              <div class="ba-pill after"><strong>바뀐 방식</strong>에이전트에게 핵심 10~16문항 퀴즈를 출제하게 해 빈틈을 바로 찾는다.</div>
+            </div>
+            <p>부품과 역할을 연결하거나 예외 상황을 묻는 퀴즈를 풀면 모르는 지점이 즉시 드러난다. 이동 중 빠른 복습이 필요하면 핵심 흐름을 짧은 쇼츠 클립으로 뽑는다.</p>
+          </div>
+
+          <div class="step-panel" data-step="4">
+            <h3>전환 4: 문서 유형별 '포맷 전용 스킬'로 틀을 고정한다</h3>
+            <div class="ba-inline">
+              <div class="ba-pill before"><strong>기존 방식</strong>PR·설계 문서·논문을 물을 때마다 매번 다른 구조로 답이 나와 다시 파악한다.</div>
+              <div class="ba-pill after"><strong>바뀐 방식</strong><button type="button" class="term-btn" data-term="스캐폴딩 (Scaffolding)" data-def="자료 유형별 출력 항목과 순서를 미리 고정한 인지 틀. 읽는 사람이 내용과 의사결정에만 집중하게 돕는다.">스캐폴딩</button>만 정의한 경량 스킬(예: <code>into</code>)로 출력 형식을 통일한다.</div>
+            </div>
+            <p>설계 문서 5개를 읽어도 5개 모두 '한 줄 요약 → 문제 → 구조 → 트레이드오프' 순서로 나온다. 읽는 뇌의 전환 비용이 사라지고 다음 행동 결정이 빨라진다.</p>
+          </div>
+        </div>
+        <div class="stepper-footer">
+          <button type="button" class="step-ctrl" data-action="prev">← 이전</button>
+          <span class="step-counter" data-role="counter">1 / 4</span>
+          <button type="button" class="step-ctrl" data-action="next">다음 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. 도입 전후 변화 비교 + 3단계 깊이 확장 SVG -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">연구원 업무별 도입 전후 변화</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>연구원 업무</th>
+              <th>기존 방식 (Before)</th>
+              <th>개선 프로세스 (After)</th>
+              <th>얻는 변화</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>신규 논문 리뷰</strong></td>
+              <td>PDF 정독 후 수동 요약 작성</td>
+              <td>고정 포맷(배경·결과·방법·한계) + 변수 조절 인터랙티브 HTML</td>
+              <td><span class="badge-good">조건 변화 직관 실험</span></td>
+            </tr>
+            <tr>
+              <td><strong>오픈소스·레포 파악</strong></td>
+              <td>README와 폴더를 수동 탐색</td>
+              <td>요청 흐름도 + 노드별 원문 라인 번호 연동 HTML + 퀴즈 점검</td>
+              <td><span class="badge-good">구조 파악·출처 동시 확보</span></td>
+            </tr>
+            <tr>
+              <td><strong>설계 문서 · PR 리뷰</strong></td>
+              <td>문서마다 다른 형식의 요약 확인</td>
+              <td>PR(전/후 비교) · 설계(3단계 깊이) 포맷 스킬 자동 적용</td>
+              <td><span class="badge-good">리뷰 기준 일관성 유지</span></td>
+            </tr>
+            <tr>
+              <td><strong>낯선 도메인 학습</strong></td>
+              <td>블로그·강의 파편 검색</td>
+              <td>입문→중급→고급→심화 로드맵 + 졸업 채점표 커리큘럼 생성</td>
+              <td><span class="badge-good">필요 지식 즉각 습득</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 2번째 인라인 SVG: 3단계 깊이 조절 구조 -->
+      <div class="diagram-box" style="margin-top: 18px;">
+        <svg viewBox="0 0 760 212" width="100%" role="img" aria-label="고정 포맷 스킬의 3단계 점진적 깊이 확장 구조">
+          <defs>
+            <marker id="arr-depth" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent)" />
+            </marker>
+          </defs>
+
+          <rect x="20" y="30" width="210" height="150" rx="12" fill="var(--svg-box)" stroke="var(--svg-border)" stroke-width="1.5" />
+          <rect x="20" y="30" width="210" height="34" rx="12" fill="var(--accent-soft)" />
+          <text x="125" y="52" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="800">1단계: 간단히 (1분 스캔)</text>
+          <text x="34" y="88" fill="var(--svg-text)" font-size="12">• 한 줄 요약 &amp; 해결할 문제</text>
+          <text x="34" y="109" fill="var(--svg-text)" font-size="12">• 전체 구조 한눈에 보기</text>
+          <text x="34" y="130" fill="var(--svg-text)" font-size="12">• 고른 안 vs 버린 안</text>
+          <text x="34" y="158" fill="var(--svg-muted)" font-size="11">→ 의사결정·필터링용</text>
+
+          <line x1="230" y1="105" x2="268" y2="105" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-depth)" />
+
+          <rect x="274" y="30" width="212" height="150" rx="12" fill="var(--svg-box)" stroke="var(--accent-border)" stroke-width="2" />
+          <rect x="274" y="30" width="212" height="34" rx="12" fill="var(--accent-soft)" />
+          <text x="380" y="52" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="800">2단계: 자세히 (리뷰용)</text>
+          <text x="288" y="88" fill="var(--svg-muted)" font-size="11.5">1단계 전체 포함 +</text>
+          <text x="288" y="110" fill="var(--svg-text)" font-size="12">• 목표와 비목표 (Non-goals)</text>
+          <text x="288" y="131" fill="var(--svg-text)" font-size="12">• 대안 비교 &amp; 코드 지도</text>
+          <text x="288" y="152" fill="var(--svg-text)" font-size="12">• 열린 질문 (Open Questions)</text>
+
+          <line x1="486" y1="105" x2="524" y2="105" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-depth)" />
+
+          <rect x="530" y="30" width="210" height="150" rx="12" fill="var(--svg-box)" stroke="var(--accent)" stroke-width="2" />
+          <rect x="530" y="30" width="210" height="34" rx="12" fill="var(--accent)" />
+          <text x="635" y="52" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800">3단계: 아주 자세히 (구현용)</text>
+          <text x="544" y="88" fill="var(--svg-muted)" font-size="11.5">2단계 전체 포함 +</text>
+          <text x="544" y="110" fill="var(--svg-text)" font-size="12">• 상세 설계 &amp; 상황별 동작</text>
+          <text x="544" y="131" fill="var(--svg-text)" font-size="12">• 공통 관심사 (보안·성능)</text>
+          <text x="544" y="152" fill="var(--svg-text)" font-size="12">• 배포·롤백·실험 조건 변화</text>
+        </svg>
+        <div class="diagram-caption">그림 2. 처음부터 장문을 읽지 않고, 필요할 때만 1→2→3단계로 깊이를 여는 점진적 공개 전략</div>
+      </div>
+    </section>
+
+    <!-- 04. 오늘 바로 복사해 쓰는 실행 플레이북 -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">오늘 바로 복사해 쓰는 실행 플레이북</h2>
+      </div>
+      <p class="sec-intro">현재 쓰는 AI 에이전트(Claude Code, Cursor, ChatGPT 등)에 아래 문구를 그대로 붙여 넣어 차이를 확인한다.</p>
+
+      <details class="accordion" open>
+        <summary>플레이북 1. 장문을 끝내는 ASD-STE100 압축 프롬프트</summary>
+        <div class="accordion-body">
+          <ul>
+            <li>긴 코드 리뷰나 논문 설명이 필요할 때 질문 맨 끝에 아래 규칙을 붙인다.</li>
+          </ul>
+          <div class="code-block">
+            <button type="button" class="copy-code-btn">복사</button>
+            <pre><code>ASD-STE100 원칙을 한국어에 적용해 설명해 줘.
+1. 한 문장에 하나의 정보만 담고 18어절을 넘기지 마.
+2. 능동태로 쓰고 행위 주체를 분명히 밝혀.
+3. 모호한 형용사(매우, 혁신적인, 적절한 등) 대신 수치와 조건을 써.
+4. [문제 → 전체 구조 → 단계별 동작 → 트레이드오프] 순서로 고정해.</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>플레이북 2. 낯선 코드·논문을 '클릭형 HTML 1장'으로 바꾸는 프롬프트</summary>
+        <div class="accordion-body">
+          <ul>
+            <li>저장소나 PDF를 분석할 때 텍스트 대신 바로 브라우저에서 열어볼 단일 HTML을 요청한다.</li>
+          </ul>
+          <div class="code-block">
+            <button type="button" class="copy-code-btn">복사</button>
+            <pre><code>이 내용을 외부 라이브러리 없는 단일 인터랙티브 HTML 파일로 만들어 줘.
+- 핵심 아키텍처와 데이터 흐름을 인라인 SVG 다이어그램으로 그려 줘.
+- 각 노드를 클릭하면 역할, 입출력, 원문 출처(파일명·라인 번호 또는 논문 섹션)를 표시해 줘.
+- 핵심 개념 이해 여부를 점검하는 5문항 객관식 퀴즈를 하단에 넣어 줘.</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>플레이북 3. 경량 포맷 스킬(into) 설치 및 커스터마이징</summary>
+        <div class="accordion-body">
+          <ul>
+            <li>12개 유형(PR, 설계 문서, 저장소, 논문, 커리큘럼 등) × 3단계 깊이 포맷이 담긴 경량 스킬을 설치해 우리 팀 형식으로 수정한다.</li>
+          </ul>
+          <div class="code-block">
+            <button type="button" class="copy-code-btn">복사</button>
+            <pre><code>npx skills add jha0313/skills_repo --skill into</code></pre>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 05. 우리 팀 프로세스 개선 아이디어 & 주의 사항 -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">우리 팀에 응용할 프로세스 개선 아이디어 &amp; 주의 사항</h2>
+      </div>
+
+      <div class="idea-list">
+        <article class="idea-card-wide">
+          <div class="card-kicker">IDEA 01 • 이슈 분석 · 개선 · 검증 자동 리포트</div>
+          <h3>이슈 처리가 끝나면 에이전트가 '이해 중심 완료 보고서'를 자동 생성한다</h3>
+          <p>이슈 분석·수정·검증이 끝난 뒤 흩어진 주행 로그와 PR을 수동으로 정리하지 않는다. 작업 종료 시 고정 포맷 스킬을 호출해 리뷰어가 1분 안에 맥락을 파악할 보고서를 받는다.</p>
+          <div class="idea-example">
+            <strong>적용 예제 — [이슈 #412 MPA 구간 Relocalization 실패 개선 리포트]</strong>
+            <ul>
+              <li><strong>원인 요약 (ASD-STE100)</strong>: 지하주차장 반복 기둥 구간에서 Keypoint 오매칭이 늘어 Pose 오차가 0.8m를 초과한다. (출처: <code>keypoint_matcher.cpp:L218</code>)</li>
+              <li><strong>수정 전/후 흐름도 (SVG)</strong>: 단순 디스크립터 매칭(Before)과 기하 검증·공시야 필터 추가(After)를 2단 블록으로 대비한다.</li>
+              <li><strong>검증 결과표</strong>: 재인식 성공률 <code>78% → 96%</code>, 평균 위치 오차 <code>0.42m → 0.11m</code>, 회귀 주행 로그 <code>42/42 통과</code>, 롤백 커밋 해시 자동 첨부.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="idea-card-wide">
+          <div class="card-kicker">IDEA 02 • 고객사 송부용 단일 HTML 분석 리포트</div>
+          <h3>고객사 전달용 분석 결과를 '열어보면 바로 이해되는 HTML 1장'으로 분리 생성한다</h3>
+          <p>내부 알고리즘 로그나 복잡한 CSV 대신 고객사 담당자가 별도 도구 없이 브라우저로 확인하는 전용 HTML 포맷을 둔다. 외부 CDN 없이 파일 1개로 완결해 메일이나 메신저에서도 깨지지 않는다.</p>
+          <div class="idea-example">
+            <strong>적용 예제 — [고객사 송부용 MPA/MRA 주행 이슈 분석 리포트.html]</strong>
+            <ul>
+              <li><strong>상단 30초 요약</strong>: 내부 구현 용어를 빼고 시험 주행 중 경로 이탈 현상과 패치 결과를 3문장으로 제시한다.</li>
+              <li><strong>클릭형 주행 타임라인 SVG</strong>: 구간 진입 → 저조도 특징점 저하 → 보정 패치 적용 → 정상 추종 단계를 클릭해 구간별 수치만 확인한다.</li>
+              <li><strong>조건별 비교표 &amp; 고객사 액션</strong>: 야간·역광·반복 패턴 조건별 성공률과 실차 재검증 체크리스트를 함께 제공한다.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="idea-card-wide">
+          <div class="card-kicker">IDEA 03 • 학습 단계별 맞춤 시각화 학습 팩</div>
+          <h3>새 개념을 공부할 때 '현재 이해 단계'에 맞춘 시각 자료를 단계별로 받는다</h3>
+          <p>차기 프로젝트의 새 아키텍처나 논문을 줄글로만 읽지 않는다. 입문·구조·심화 3단계에 맞춰 그림과 인터랙티브 요소를 점진적으로 확장해 이해 공백을 없앤다.</p>
+          <div class="idea-example">
+            <strong>적용 예제 — [차기 과제: BEV 기반 Semantic SLAM &amp; World Map 3단계 학습 팩]</strong>
+            <ul>
+              <li><strong>1단계 (입문 · 직관 확보)</strong>: 기존 Keypoint V-SLAM과 BEV 입력(주차공간·객체·Freespace) 기반 Semantic SLAM의 차이를 1장 비교도로 3분 안에 잡는다.</li>
+              <li><strong>2단계 (구조 · 원리 파악)</strong>: BEV 인식 입력 → 데이터 연관(Association) → World Map 갱신·관리 흐름을 클릭형 Step-through SVG와 비교표로 확인한다.</li>
+              <li><strong>3단계 (심화 · 실전 검증)</strong>: 동적 객체 필터링·맵 경량화 트레이드오프 표 + 핵심 5문항 객관식 퀴즈로 설계 전 이해 누락을 점검한다.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <details class="accordion">
+        <summary>도입 전 반드시 점검할 주의 사항 (Trade-offs)</summary>
+        <div class="accordion-body">
+          <ul>
+            <li><strong>고객사 송부 전 민감 정보 마스킹 필수</strong>: 고객사용 HTML 자동 생성 시 내부 파일 경로, 사내 서버 주소, 미공개 코드가 본문이나 SVG 주석에 남지 않도록 전용 템플릿과 사전 검수 절차를 분리한다.</li>
+            <li><strong>이슈 보고서의 근거 링크 강제</strong>: 자동 보고서가 깔끔할수록 오류(Hallucination)를 놓치기 쉽다. 원인 설명과 검증 수치 옆에 실제 파일 라인 번호, 커밋 해시, 테스트 로그를 함께 출력하게 강제한다.</li>
+            <li><strong>단순 질문에 시각화 남용 금지</strong>: 3줄로 끝날 개념까지 단계별 HTML로 만들면 생성 대기 시간이 오히려 병목이 된다. 팀과 공유하거나 2번 이상 다시 볼 이슈·개념에만 시각화를 적용한다.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- 06. 10분 실험 체크리스트 + 용어 사전 + 참고 근거 -->
+    <section class="section">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 class="sec-title">이번 주 10분 실험 체크리스트 &amp; 참고 근거</h2>
+      </div>
+      <ul class="checklist" id="actionChecklist">
+        <li>
+          <label class="check-item">
+            <input type="checkbox" data-check-id="i01-v2-1" />
+            <span>오늘 읽어야 할 논문 1편 또는 PR 1건에 플레이북 1(ASD-STE100 프롬프트)을 적용해 기존 답변과 길이를 비교한다.</span>
+          </label>
+        </li>
+        <li>
+          <label class="check-item">
+            <input type="checkbox" data-check-id="i01-v2-2" />
+            <span>현재 다루는 코드베이스 중 가장 복잡한 모듈 1개를 플레이북 2로 인터랙티브 HTML로 변환해 본다.</span>
+          </label>
+        </li>
+        <li>
+          <label class="check-item">
+            <input type="checkbox" data-check-id="i01-v2-3" />
+            <span>우리 팀이 매주 반복해서 읽는 문서 유형 2가지를 골라 [간단히 / 자세히 / 아주 자세히] 항목 초안을 적어 본다.</span>
+          </label>
+        </li>
+      </ul>
+      <div class="check-status" id="checkStatus">완료: 0 / 3</div>
+
+      <dl class="glossary-grid">
+        <div class="glossary-item">
+          <dt>ASD-STE100</dt>
+          <dd>항공 정비에서 오해를 막기 위해 만든 간소화 기술 언어 규격. 짧은 단문, 능동태, 일관된 용어로 기술 정보를 압축한다.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>ELI5 (Explain Like I'm Five)</dt>
+          <dd>전문 용어를 빼고 일상 비유로 개념의 큰 그림을 먼저 잡도록 유도하는 프롬프트 기법.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>스캐폴딩 (Scaffolding)</dt>
+          <dd>문서 유형별 고정 출력 틀. 매번 같은 순서로 정보를 제공해 독자의 인지 전환 비용을 없앤다.</dd>
+        </div>
+        <div class="glossary-item">
+          <dt>into 스킬 (into Skill)</dt>
+          <dd>복잡한 코드 없이 12종 자료 포맷과 3단계 깊이만 정의한 경량 에이전트 스킬.</dd>
+        </div>
+      </dl>
+
+      <div class="ref-box">
+        <strong>참고 근거 및 실전 데모 확인</strong>
+        <p>이 프로세스 전환 아이디어는 Meta 시니어 엔지니어(실밸개발자)의 실무 데모와 오픈소스 스킬(<a class="inline-link" href="https://github.com/jha0313/skills_repo/tree/main/into" target="_blank" rel="noopener">into</a> · <a class="inline-link" href="https://github.com/careerhackeralex/visualize" target="_blank" rel="noopener">visualize</a> · <a class="inline-link" href="https://github.com/cursor/plugins/tree/main/pstack" target="_blank" rel="noopener">pstack</a>)을 연구원 업무 관점으로 재구성했다. 실제 작동 데모는 아래 구간에서 확인한다.</p>
+        <div class="ts-row">
+          <a class="ts-chip" href="https://youtu.be/G1JkA_W-dYM?t=279" target="_blank" rel="noopener">▶ 04:39 ASD-STE100 데모</a>
+          <a class="ts-chip" href="https://youtu.be/G1JkA_W-dYM?t=567" target="_blank" rel="noopener">▶ 09:27 Interactive HTML 데모</a>
+          <a class="ts-chip" href="https://youtu.be/G1JkA_W-dYM?t=684" target="_blank" rel="noopener">▶ 11:24 퀴즈 검증 데모</a>
+          <a class="ts-chip" href="https://youtu.be/G1JkA_W-dYM?t=834" target="_blank" rel="noopener">▶ 13:54 into 12종 포맷</a>
+          <a class="ts-chip" href="https://youtu.be/G1JkA_W-dYM?t=1089" target="_blank" rel="noopener">▶ 18:09 논문 적용 데모</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>ASD-STE100 규격 • 연구원 업무 프로세스 개선 브리핑</span>
+      <a class="nav-back" href="../index.html">전체 아카이브 보기 →</a>
+    </footer>
+  </main>
+
+  <div class="term-sheet" id="termSheet" role="dialog" aria-live="polite" aria-hidden="true">
+    <div class="term-sheet-head">
+      <strong id="termSheetTitle">용어</strong>
+      <button type="button" class="term-sheet-close" id="termSheetClose">닫기</button>
+    </div>
+    <p id="termSheetDef"></p>
+  </div>
+
+  <div class="toast" id="toast">복사했습니다.</div>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const issueId = document.body.getAttribute("data-issue-id") || "default";
+
+      const progressBar = document.getElementById("progressBar");
+      function updateProgress() {
+        const scrollTop = window.scrollY || root.scrollTop;
+        const docHeight = root.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        progressBar.style.width = pct.toFixed(1) + "%";
+      }
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+      const themeBtn = document.getElementById("themeToggle");
+      function setTheme(theme) {
+        if (theme === "dark") {
+          root.setAttribute("data-theme", "dark");
+          themeBtn.textContent = "라이트";
+        } else {
+          root.removeAttribute("data-theme");
+          themeBtn.textContent = "다크";
+        }
+        try { localStorage.setItem("ai_newsletter_theme", theme); } catch (e) {}
+      }
+      try { if (localStorage.getItem("ai_newsletter_theme") === "dark") setTheme("dark"); } catch (e) {}
+      themeBtn.addEventListener("click", function () {
+        setTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      });
+
+      let fontScale = 1;
+      function applyFontScale() { root.style.setProperty("--font-scale", fontScale.toFixed(2)); }
+      document.getElementById("fontDec").addEventListener("click", function () {
+        fontScale = Math.max(0.85, fontScale - 0.08);
+        applyFontScale();
+      });
+      document.getElementById("fontInc").addEventListener("click", function () {
+        fontScale = Math.min(1.25, fontScale + 0.08);
+        applyFontScale();
+      });
+
+      const toast = document.getElementById("toast");
+      let toastTimer = null;
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+      }
+      function copyText(text, successMsg) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            showToast(successMsg);
+          }).catch(function () {
+            showToast("직접 선택해 복사하세요.");
+          });
+        } else {
+          showToast("직접 선택해 복사하세요.");
+        }
+      }
+      document.getElementById("copyLinkBtn").addEventListener("click", function () {
+        copyText(window.location.href, "현재 페이지 링크를 복사했습니다.");
+      });
+      document.querySelectorAll(".copy-code-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const pre = btn.parentElement.querySelector("pre");
+          if (pre) copyText(pre.textContent.trim(), "플레이북 내용을 복사했습니다.");
+        });
+      });
+
+      document.querySelectorAll(".stepper").forEach(function (stepper) {
+        const key = stepper.getAttribute("data-stepper");
+        const tabs = Array.from(stepper.querySelectorAll(".step-tab"));
+        const panels = Array.from(stepper.querySelectorAll(".step-panel"));
+        const prevBtn = stepper.querySelector('[data-action="prev"]');
+        const nextBtn = stepper.querySelector('[data-action="next"]');
+        const counter = stepper.querySelector('[data-role="counter"]');
+        const svg = document.querySelector('svg[data-stepper-svg="' + key + '"]');
+        const svgNodes = svg ? Array.from(svg.querySelectorAll(".svg-node[data-step]")) : [];
+
+        let currentIndex = 0;
+        function renderStep(idx) {
+          currentIndex = Math.max(0, Math.min(tabs.length - 1, idx));
+          const activeStep = tabs[currentIndex].getAttribute("data-step");
+
+          tabs.forEach(function (t, i) { t.classList.toggle("active", i === currentIndex); });
+          panels.forEach(function (p) { p.classList.toggle("active", p.getAttribute("data-step") === activeStep); });
+          if (counter) counter.textContent = (currentIndex + 1) + " / " + tabs.length;
+          if (prevBtn) prevBtn.disabled = currentIndex === 0;
+          if (nextBtn) nextBtn.disabled = currentIndex === tabs.length - 1;
+
+          svgNodes.forEach(function (node) {
+            const match = node.getAttribute("data-step") === activeStep;
+            node.classList.toggle("is-active", match);
+            node.classList.toggle("is-dimmed", !match);
+          });
+        }
+
+        tabs.forEach(function (tab, idx) { tab.addEventListener("click", function () { renderStep(idx); }); });
+        svgNodes.forEach(function (node) {
+          node.addEventListener("click", function () {
+            const stepVal = node.getAttribute("data-step");
+            const targetIdx = tabs.findIndex(function (t) { return t.getAttribute("data-step") === stepVal; });
+            if (targetIdx >= 0) renderStep(targetIdx);
+          });
+        });
+        if (prevBtn) prevBtn.addEventListener("click", function () { renderStep(currentIndex - 1); });
+        if (nextBtn) nextBtn.addEventListener("click", function () { renderStep(currentIndex + 1); });
+        if (tabs.length > 0) renderStep(0);
+      });
+
+      const termSheet = document.getElementById("termSheet");
+      const termTitle = document.getElementById("termSheetTitle");
+      const termDef = document.getElementById("termSheetDef");
+      const termClose = document.getElementById("termSheetClose");
+
+      function closeTermSheet() {
+        termSheet.classList.remove("open");
+        termSheet.setAttribute("aria-hidden", "true");
+      }
+      document.querySelectorAll(".term-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          termTitle.textContent = btn.getAttribute("data-term") || btn.textContent;
+          termDef.textContent = btn.getAttribute("data-def") || "";
+          termSheet.classList.add("open");
+          termSheet.setAttribute("aria-hidden", "false");
+        });
+      });
+      termClose.addEventListener("click", closeTermSheet);
+      document.addEventListener("click", function (e) {
+        if (termSheet.classList.contains("open") && !termSheet.contains(e.target)) closeTermSheet();
+      });
+
+      const checkboxes = Array.from(document.querySelectorAll('#actionChecklist input[type="checkbox"]'));
+      const statusEl = document.getElementById("checkStatus");
+      const storageKey = "ai_newsletter_checks_" + issueId;
+
+      function loadChecks() {
+        try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch (e) { return {}; }
+      }
+      function saveChecks(state) {
+        try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (e) {}
+      }
+      function updateCheckUI() {
+        const doneCount = checkboxes.filter(function (cb) { return cb.checked; }).length;
+        checkboxes.forEach(function (cb) {
+          const item = cb.closest(".check-item");
+          if (item) item.classList.toggle("done", cb.checked);
+        });
+        if (statusEl) statusEl.textContent = "완료: " + doneCount + " / " + checkboxes.length;
+      }
+
+      const savedChecks = loadChecks();
+      checkboxes.forEach(function (cb) {
+        const id = cb.getAttribute("data-check-id");
+        if (id && savedChecks[id]) cb.checked = true;
+        cb.addEventListener("change", function () {
+          const state = loadChecks();
+          if (id) state[id] = cb.checked;
+          saveChecks(state);
+          updateCheckUI();
+        });
+      });
+      updateCheckUI();
+    })();
+  </script>
+</body>
+</html>

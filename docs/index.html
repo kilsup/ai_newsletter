@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI &amp; Engineering Research Newsletter Archive</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AI &amp; Engineering Research Newsletter" />
+  <meta property="og:description" content="연구원 대상 AI 트렌드 및 엔지니어링 시각화 브리핑 아카이브 (ASD-STE100 규격)" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-soft: #eff6ff;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --border: #263244;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.14);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .theme-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 40px;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 5vw, 32px);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    header p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+    .issue-list {
+      display: grid;
+      gap: 16px;
+    }
+    .issue-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .issue-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .issue-badge {
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .card-title {
+      margin: 0 0 8px;
+      font-size: 19px;
+      line-height: 1.35;
+    }
+    .card-title a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .card-title a:hover {
+      color: var(--accent);
+    }
+    .card-summary {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14.5px;
+    }
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface-2);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    .read-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top-bar">
+      <span class="brand-pill">ASD-STE100 • VISUAL RESEARCH BRIEF</span>
+      <button type="button" class="theme-btn" id="themeToggle">다크 모드</button>
+    </div>
+
+    <header>
+      <h1>AI &amp; Engineering 뉴스레터 아카이브</h1>
+      <p>유튜브 기술 영상을 ASD-STE100 간결 문체와 인터랙티브 다이어그램으로 정리합니다. (총 1편)</p>
+    </header>
+
+    <section class="controls" aria-label="뉴스레터 검색 및 필터">
+      <input type="search" id="searchInput" class="search-input" placeholder="주제, 기술명, 태그로 검색..." />
+      <div class="filter-row" id="filterRow">
+        <button type="button" class="filter-btn active" data-filter="all">전체</button><button type="button" class="filter-btn" data-filter="asd-ste100">ASD-STE100</button><button type="button" class="filter-btn" data-filter="process upgrade">Process Upgrade</button><button type="button" class="filter-btn" data-filter="skill">Skill</button><button type="button" class="filter-btn" data-filter="visualization">Visualization</button><button type="button" class="filter-btn" data-filter="workflow">Workflow</button>
+      </div>
+    </section>
+
+    <main class="issue-list" id="issueList">
+      
+            <article class="issue-card" data-tags="workflow,asd-ste100,visualization,skill,process upgrade" data-search="01 ai가 뽑아준 장문의 답, 왜 읽다 지칠까? — 연구원의 &#x27;이해 프로세스&#x27; 4단계 전환 읽기 병목을 끝내는 4단계 전환: asd-ste100 압축, 인터랙티브 html 시각화, 퀴즈 검증, 포맷 스킬 고정. workflow asd-ste100 visualization skill process upgrade">
+              <div class="card-meta">
+                <span class="issue-badge">Issue #01</span>
+                <span class="meta-dot">•</span>
+                <time datetime="2026-11-26">2026-11-26</time>
+                <span class="meta-dot">•</span>
+                <span>영상 1편</span>
+              </div>
+              <h2 class="card-title">
+                <a href="issues/2026-11-26-issue-01-comprehension-bottleneck.html">AI가 뽑아준 장문의 답, 왜 읽다 지칠까? — 연구원의 &#x27;이해 프로세스&#x27; 4단계 전환</a>
+              </h2>
+              <p class="card-summary">읽기 병목을 끝내는 4단계 전환: ASD-STE100 압축, 인터랙티브 HTML 시각화, 퀴즈 검증, 포맷 스킬 고정.</p>
+              <div class="card-footer">
+                <div class="tag-row"><span class="tag">Workflow</span><span class="tag">ASD-STE100</span><span class="tag">Visualization</span><span class="tag">Skill</span><span class="tag">Process Upgrade</span></div>
+                <a class="read-btn" href="issues/2026-11-26-issue-01-comprehension-bottleneck.html">브리핑 읽기 →</a>
+              </div>
+            </article>
+            
+    </main>
+
+    <footer>
+      외부 의존성 0% 자체 완결형 HTML • 모바일 카카오톡 및 데스크톱 브라우저 최적화
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      // 테마 토글 상태 유지
+      const root = document.documentElement;
+      const themeBtn = document.getElementById("themeToggle");
+      const savedTheme = localStorage.getItem("ai_newsletter_theme");
+      if (savedTheme === "dark") {
+        root.setAttribute("data-theme", "dark");
+        themeBtn.textContent = "라이트 모드";
+      }
+      themeBtn.addEventListener("click", function () {
+        const isDark = root.getAttribute("data-theme") === "dark";
+        if (isDark) {
+          root.removeAttribute("data-theme");
+          localStorage.setItem("ai_newsletter_theme", "light");
+          themeBtn.textContent = "다크 모드";
+        } else {
+          root.setAttribute("data-theme", "dark");
+          localStorage.setItem("ai_newsletter_theme", "dark");
+          themeBtn.textContent = "라이트 모드";
+        }
+      });
+
+      // 태그 필터 + 텍스트 검색 동시 적용
+      const cards = Array.from(document.querySelectorAll(".issue-card"));
+      const searchInput = document.getElementById("searchInput");
+      const filterBtns = Array.from(document.querySelectorAll(".filter-btn"));
+      let activeTag = "all";
+
+      function applyFilters() {
+        const query = (searchInput.value || "").trim().toLowerCase();
+        cards.forEach(function (card) {
+          const tags = (card.getAttribute("data-tags") || "").split(",");
+          const hay = card.getAttribute("data-search") || "";
+          const tagMatch = activeTag === "all" || tags.includes(activeTag);
+          const textMatch = !query || hay.includes(query);
+          card.style.display = tagMatch && textMatch ? "" : "none";
+        });
+      }
+
+      searchInput.addEventListener("input", applyFilters);
+      filterBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          filterBtns.forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          activeTag = btn.getAttribute("data-filter") || "all";
+          applyFilters();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
